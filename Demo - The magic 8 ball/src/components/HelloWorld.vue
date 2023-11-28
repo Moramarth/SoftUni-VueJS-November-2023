@@ -1,46 +1,90 @@
-<script setup>
-import { ref } from 'vue';
+<script>
+const possibleAnswers = ['Yes', ' no', 'maybe', 'I don\'t know', 'Can you repeat the question?', 'You\'re not the boss of me now and you\'re not so big', 'You\'re not the boss of me now', 'You\'re not the boss of me now', 'You\'re not the boss of me now and you\'re not so big', 'Life is unfair', 'wildcard'];
 
-defineProps({
-  msg: String,
-});
+export default {
+  data() {
+    return {
+      isThinking: false,
+      hasAnswer: false,
+      answers: [],
+    };
+  },
 
-const count = ref(0);
+  methods: {
+    giveWisdom() {
+      this.answers = [];
+      this.isThinking = true;
+      this.hasAnswer = false;
+      const randomIndex = Math.floor(Math.random() * possibleAnswers.length);
+      const currentAnswer = possibleAnswers[randomIndex];
+      if (currentAnswer === 'wildcard') {
+        this.answers = ['Yes, no, maybe', 'I don\'t know', 'Can you repeat the question?', 'You\'re not the boss of me now and you\'re not so big', 'You\'re not the boss of me now', 'Life is unfair....'];
+      }
+      else {
+        this.answers.push(currentAnswer);
+      }
+      setTimeout(() => {
+        document.querySelector('img').src = 'https://static.wikia.nocookie.net/jacknjellify-recommended-characters/images/f/ff/8-Ball_IDFB_Pose.png';
+        this.hasAnswer = true;
+      }, 3000);
+      setTimeout(() => {
+        this.hasAnswer = false;
+        this.isThinking = false;
+        document.querySelector('img').src = 'https://static.wikia.nocookie.net/jacknjellify-recommended-characters/images/7/75/BR_1563664832241.png';
+      }, 8000);
+    },
+  },
+};
 </script>
 
 <template>
-  <div class="container" style="text-align:center">
-    <img src="../assets/vue.svg" alt="Logo" style="width: 10rem; margin: 1rem auto;">
-    <h1>{{ msg }}</h1>
-
-    <div class="card">
-      <button type="button" @click="count++">
-        count is {{ count }}
-      </button>
-      <p>
-        Edit
-        <code>components/HelloWorld.vue</code> to test HMR
+  <div class="container">
+    <h1>I am the magic 8 ball</h1>
+    <h2>I have all the answers</h2>
+    <img
+      v-if="!isThinking"
+      src="https://static.wikia.nocookie.net/jacknjellify-recommended-characters/images/7/75/BR_1563664832241.png"
+      alt="8ball"
+    >
+    <img
+      v-else
+      src="https://static.wikia.nocookie.net/jacknjellify-recommended-characters/images/4/40/8bal-roll.gif"
+      alt="thinking"
+    >
+    <div v-if="hasAnswer" class="container">
+      <p v-for="answer in answers">
+        {{ answer }}
       </p>
     </div>
+    <div v-else class="container">
+      <p>Ask your question outloud and press the button.</p>
 
-    <p>
-      Check out
-      <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank">create-vue</a>, the official Vue + Vite
-      starter
-    </p>
-    <p>
-      Install
-      <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
-      in your IDE for a better DX
-    </p>
-    <p class="read-the-docs">
-      Click on the Vite and Vue logos to learn more
-    </p>
+      <p>The ball does not need access to your mic</p>
+    </div>
+
+    <button @click="giveWisdom">
+      Get my wisdom
+    </button>
   </div>
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+button {
+  max-width: 30%;
+}
+
+p:last-of-type {
+  margin-bottom: 4em;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+img {
+  max-width: 40%;
+  margin: 4em auto;
 }
 </style>
