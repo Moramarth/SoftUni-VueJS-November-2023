@@ -1,46 +1,34 @@
 <script>
-export default {
+import { categories } from '../../../constants/categories';
 
+export default {
+  props: {
+    activeItem: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['onSelect'],
+  data() {
+    return {
+      categories,
+    };
+  },
+  methods: {
+    onSelect(selected) {
+      const val = this.activeItem === selected ? '' : selected;
+      this.$emit('onSelect', val);
+    },
+  },
 };
 </script>
 
 <template>
-  <h1>This is filters component</h1>
   <div>
     <ul role="list" class="categories">
-      <li>
-        <button class="primary">
-          Women's Dresses
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Women's Shoes
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Men's Shirts
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Men's Shoes
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Men's Watches
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Women's Watches
-        </button>
-      </li>
-      <li>
-        <button class="secondary outline">
-          Sunglasses
+      <li v-for="cat in categories" :key="cat.value">
+        <button :class="[activeItem === cat.value ? 'primary' : 'secondary outline']" @click="onSelect(cat.value)">
+          {{ cat.name }}
         </button>
       </li>
     </ul>

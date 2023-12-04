@@ -1,5 +1,12 @@
 <script>
 export default {
+  props: {
+    cartProducts: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+  },
   emits: ['onSelect'],
   methods: {
     onSelect(viewName) {
@@ -26,7 +33,7 @@ export default {
         <li><a href="#" @click.prevent="onSelect('shop')">Shop</a></li>
         <li><a href="#" @click.prevent="onSelect('About')">About</a></li>
         <li><a href="#" @click.prevent="onSelect('Contacts')">Contacts</a></li>
-        <li><a href="#" role="button" @click.prevent="onSelect('Cart')">Cart</a></li>
+        <li><a href="#" role="button" @click.prevent="onSelect('Cart')">Cart<span v-if="cartProducts.length">({{ cartProducts.length }})</span></a></li>
       </ul>
     </nav>
   </header>

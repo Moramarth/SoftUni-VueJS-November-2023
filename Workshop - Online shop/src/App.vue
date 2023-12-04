@@ -20,20 +20,24 @@ export default {
   data() {
     return {
       view: 'Home',
+      cartProducts: [],
     };
   },
   methods: {
     handleNavSelection(selectedview) {
       this.view = selectedview;
     },
+    onAddToCart(productId) {
+      this.cartProducts.push(productId);
+    },
   },
 };
 </script>
 
 <template>
-  <AppHeader @on-select="handleNavSelection" />
+  <AppHeader :cart-products="cartProducts" @on-select="handleNavSelection" />
   <main>
-    <component :is="view" />
+    <component :is="view" @on-add-to-cart="onAddToCart" />
   </main>
   <AppFooter />
 </template>
