@@ -1,13 +1,45 @@
 <script>
-import ComponentsStarter from './components/ComponentsStarter.vue';
+import AppHeader from './components/AppHeader.vue';
+import AppFooter from './components/AppFooter.vue';
+import Home from './views/Home.vue';
+import About from './views/About.vue';
+import Contacts from './views/Contacts.vue';
+import Shop from './views/Shop/Shop.vue';
+import Cart from './views/Cart.vue';
 
 export default {
   components: {
-    ComponentsStarter,
+    AppHeader,
+    AppFooter,
+    Home,
+    About,
+    Contacts,
+    Shop,
+    Cart,
+  },
+  data() {
+    return {
+      view: 'Home',
+    };
+  },
+  methods: {
+    handleNavSelection(selectedview) {
+      this.view = selectedview;
+    },
   },
 };
 </script>
 
 <template>
-  <ComponentsStarter />
+  <AppHeader @on-select="handleNavSelection" />
+  <main>
+    <component :is="view" />
+  </main>
+  <AppFooter />
 </template>
+
+<style scoped>
+main {
+  padding: 1rem 2rem;
+}
+</style>
