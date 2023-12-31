@@ -6,6 +6,7 @@ import About from './views/About.vue';
 import Contacts from './views/Contacts.vue';
 import Shop from './views/Shop/Shop.vue';
 import Cart from './views/Cart.vue';
+import Register from './views/Register/Register.vue';
 
 export default {
   components: {
@@ -16,6 +17,7 @@ export default {
     Contacts,
     Shop,
     Cart,
+    Register,
   },
   data() {
     return {
