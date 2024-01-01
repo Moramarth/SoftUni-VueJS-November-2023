@@ -1,4 +1,6 @@
 <script>
+import { useVuelidate } from '@vuelidate/core';
+import { minLength, required } from '@vuelidate/validators';
 import FormItem from './FormItem.vue';
 
 export default {
@@ -15,14 +17,33 @@ export default {
     },
   },
   emits: ['onSubmit', 'onBack'],
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       formData: { ...this.initialData },
     };
   },
+  validations() {
+    return {
+      formData: {
+        address1: {
+          required,
+          minLength: minLength(5),
+        },
+        city: {
+          required,
+        },
+      },
+    };
+  },
   methods: {
-    handleSubmit() {
-      this.$emit('onSubmit', this.formData);
+    async handleSubmit() {
+      const isValid = await this.v$.$validate();
+      if (isValid) {
+        this.$emit('onSubmit', this.formData);
+      }
     },
   },
 };
@@ -34,6 +55,7 @@ export default {
     <form action="" @submit.prevent="handleSubmit">
       <FormItem
         v-model="formData.address1"
+        :v$="v$"
         class="full-row"
         field="address1"
         label="Address Line 1"
@@ -47,6 +69,7 @@ export default {
       />
       <FormItem
         v-model="formData.city"
+        :v$="v$"
         field="city"
         label="City"
         required

@@ -1,9 +1,13 @@
 <script>
+import { useVuelidate } from '@vuelidate/core';
 import AddressForm from './components/AddressForm.vue';
 import GeneralForm from './components/GeneralForm.vue';
 
 export default {
   components: { GeneralForm, AddressForm },
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       activeForm: 'general',
@@ -26,13 +30,18 @@ export default {
     };
   },
   methods: {
-    onGeneralFormSubmit(generalData) {
-      this.activeForm = 'address';
-      this.data.general = { ...generalData };
+    async onGeneralFormSubmit(generalData) {
+      const isValid = await this.v$.$validate();
+      if (isValid) {
+        this.activeForm = 'address';
+        this.data.general = { ...generalData };
+      }
     },
-    onSubmit(addressData) {
-      this.data.address = { ...addressData };
-      console.log('THE DATA', this.data);
+    async onSubmit(addressData) {
+      const isValid = await this.v$.$validate();
+      if (isValid) {
+        this.data.address = { ...addressData };
+      }
     },
     onBack() {
       this.activeForm = 'general';

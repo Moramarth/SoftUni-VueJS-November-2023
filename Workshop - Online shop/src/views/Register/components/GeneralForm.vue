@@ -1,5 +1,23 @@
 <script>
+import { useVuelidate } from '@vuelidate/core';
+import { alphaNum, email, helpers, maxLength, minLength, numeric, required, sameAs } from '@vuelidate/validators';
 import FormItem from './FormItem.vue';
+
+function hasTwoNames(value) {
+  if (!value.includes(' '))
+    return false;
+
+  const names = value.split(' ').filter(Boolean);
+  if (names.length !== 2)
+    return false;
+
+  return true;
+}
+
+function namesAreCapitalized(value) {
+  const regex = /^([A-Z][a-z]*\s*)+$/;
+  return regex.test(value);
+}
 
 export default {
   components: { FormItem },
@@ -19,14 +37,51 @@ export default {
     },
   },
   emits: ['onSubmit'],
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       formData: { ...this.initialData },
     };
   },
+  validations() {
+    return {
+      formData: {
+        name: {
+          required: helpers.withMessage('Custom required field msg', required),
+          hasTwoNames: helpers.withMessage('Should contain two names separated by a space!', hasTwoNames),
+          namesAreCapitalized: helpers.withMessage('Both names should start with a capital letter!', namesAreCapitalized),
+        },
+        pass: {
+          required,
+          alphaNum,
+          minLength: minLength(3),
+          maxLength: maxLength(16),
+        },
+        confirmPass: { required, sameAs: sameAs(this.formData.pass) },
+        email: { required, email },
+        phone: {
+          required,
+          numeric,
+          minLength: minLength(9),
+          maxLength: maxLength(9),
+        },
+        gender: {
+          required,
+        },
+        dateOfBirth: {
+          required,
+        },
+      },
+    };
+  },
   methods: {
-    handleSubmit() {
-      this.$emit('onSubmit', this.formData);
+    async handleSubmit() {
+      const isValid = await this.v$.$validate();
+      if (isValid) {
+        this.$emit('onSubmit', this.formData);
+      }
     },
   },
 };
@@ -39,6 +94,7 @@ export default {
     <form action="" @submit.prevent="handleSubmit">
       <FormItem
         v-model="formData.name"
+        :v$="v$"
         class="full-row"
         field="name"
         label="Name"
@@ -46,6 +102,7 @@ export default {
       />
 
       <FormItem
+        :v$="v$"
         field="pass"
         label="Password"
         required
@@ -54,6 +111,7 @@ export default {
       </FormItem>
 
       <FormItem
+        :v$="v$"
         field="confirmPass"
         label="Confirm password"
         required
@@ -63,12 +121,14 @@ export default {
 
       <FormItem
         v-model="formData.email"
+        :v$="v$"
         field="email"
         label="Email"
         required
       />
 
       <FormItem
+        :v$="v$"
         field="phone"
         label="Phone number"
         required
@@ -77,6 +137,7 @@ export default {
       </FormItem>
 
       <FormItem
+        :v$="v$"
         field="gender"
         label="Gender"
         required
@@ -95,6 +156,14 @@ export default {
             Other
           </option>
         </select>
+      </FormItem>
+      <FormItem
+        :v$="v$"
+        field="dateOfBirth"
+        label="Date of birth"
+        required
+      >
+        <input id="phone" v-model="formData.dateOfBirth" type="date">
       </FormItem>
       <button type="submit" class="full-row">
         Submit

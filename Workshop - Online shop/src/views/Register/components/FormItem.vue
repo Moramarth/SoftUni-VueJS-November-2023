@@ -15,8 +15,16 @@ export default {
     required: {
       type: Boolean,
     },
+    v$: {
+      type: Object,
+    },
   },
   emits: ['update:modelValue'],
+  computed: {
+    hasErrors() {
+      return this.v$?.formData[this.field]?.$errors.length;
+    },
+  },
   methods: {
     onChange(event) {
       this.$emit('update:modelValue', event.target.value);
@@ -26,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div :class="hasErrors ? 'has-errors' : ''">
     <label :for="field"> {{ label }} </label>
     <slot>
       <input
@@ -36,9 +44,22 @@ export default {
         @input="onChange"
       >
     </slot>
+    <ul v-if="hasErrors" class="error-msg">
+      <li v-for="error in v$?.formData[field].$errors" :key="error.$uid">
+        {{ error.$message }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <style scoped>
+.has-errors> :deep(input),
+.has-errors> :deep(select),
+.has-errors> :deep(textarea) {
+    border-color: red;
+}
 
+.has-errors .error-msg {
+    color: red;
+}
 </style>
