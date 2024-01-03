@@ -1,5 +1,7 @@
 <script>
+import { mapActions } from 'pinia';
 import { loginUser } from '../dataProviders/auth';
+import { useUserStore } from '../stores/userStore';
 
 export default {
   data() {
@@ -12,9 +14,14 @@ export default {
     };
   },
   methods: {
+    ...mapActions(useUserStore, ['setProfile']),
     async onSubmit() {
       this.isLoading = true;
       const userData = await loginUser(this.user);
+      if (userData) {
+        this.setProfile(userData);
+        this.$router.push('/profile');
+      }
       this.isLoading = false;
     },
   },

@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <AppHeader :cart-products="cartProducts" />
+  <AppHeader />
   <main>
     <router-view />
   </main>

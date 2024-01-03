@@ -8,6 +8,12 @@ import Register from '../views/Register/Register.vue';
 import Login from '../views/Login.vue';
 import Profile from '../views/Profile.vue';
 import Favourites from '../views/Favourites.vue';
+import { useUserStore } from '../stores/userStore';
+
+function validateUser() {
+  const userStore = useUserStore();
+  return userStore.isAuthenticated ? userStore.isAuthenticated : { path: '/login' };
+};
 
 const routes = [
   { path: '/', component: Home },
@@ -16,9 +22,12 @@ const routes = [
   { path: '/contacts', component: Contacts },
   { path: '/cart', component: Cart },
   { path: '/register', component: Register },
-  { path: '/login', component: Login },
-  { path: '/profile', component: Profile },
-  { path: '/favourites', component: Favourites },
+  { path: '/login', component: Login, beforeEnter: () => {
+    const userStore = useUserStore();
+    return userStore.isAuthenticated ? { path: '/profile' } : true;
+  } },
+  { path: '/profile', component: Profile, beforeEnter: validateUser },
+  { path: '/favourites', component: Favourites, beforeEnter: validateUser },
 ];
 
 const router = createRouter({
