@@ -1,5 +1,10 @@
 <script>
+import { RouterLink } from 'vue-router';
+
 export default {
+  components: {
+    RouterLink,
+  },
   props: {
     cartProducts: {
       type: Array,
@@ -7,13 +12,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['onSelect'],
-  methods: {
-    onSelect(viewName) {
-      this.$emit('onSelect', viewName);
-    },
 
-  },
 };
 </script>
 
@@ -29,12 +28,56 @@ export default {
         </li>
       </ul>
       <ul>
-        <li><a href="#" @click.prevent="onSelect('Home')">Home</a></li>
-        <li><a href="#" @click.prevent="onSelect('shop')">Shop</a></li>
-        <li><a href="#" @click.prevent="onSelect('About')">About</a></li>
-        <li><a href="#" @click.prevent="onSelect('Contacts')">Contacts</a></li>
-        <li><a href="#" @click.prevent="onSelect('Register')">Register</a></li>
-        <li><a href="#" role="button" @click.prevent="onSelect('Cart')">Cart<span v-if="cartProducts.length">({{ cartProducts.length }})</span></a></li>
+        <li>
+          <RouterLink to="/">
+            Home
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/shop">
+            Shop
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/about">
+            About
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/contacts">
+            Contacts
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/profile" class="profileLink">
+            Profile <img src="" alt="">
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/favourites">
+            My favourites
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/register">
+            Register
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/">
+            Logout
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/login">
+            Login
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/cart" role="button">
+            Cart<span v-if="cartProducts.length">({{ cartProducts.length }})</span>
+          </RouterLink>
+        </li>
       </ul>
     </nav>
   </header>

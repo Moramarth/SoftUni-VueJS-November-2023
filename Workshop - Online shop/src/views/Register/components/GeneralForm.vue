@@ -163,7 +163,7 @@ export default {
         label="Date of birth"
         required
       >
-        <input id="phone" v-model="formData.dateOfBirth" type="date">
+        <input id="dateOfBirth" v-model="formData.dateOfBirth" type="date">
       </FormItem>
       <button type="submit" class="full-row">
         Submit
