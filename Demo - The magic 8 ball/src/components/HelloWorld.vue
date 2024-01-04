@@ -52,7 +52,7 @@ export default {
       alt="thinking"
     >
     <div v-if="hasAnswer" class="container">
-      <p v-for="answer in answers">
+      <p v-for="answer in answers" :key="answer">
         {{ answer }}
       </p>
     </div>

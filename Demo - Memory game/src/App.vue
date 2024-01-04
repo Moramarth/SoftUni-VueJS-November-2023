@@ -69,7 +69,7 @@ export default {
       handler(newVal) {
         if (this.cards.length / 2 === newVal.length) {
           this.hasWon = true;
-          setInterval(() => this.onStop(), 2000);
+          setTimeout(() => this.onStop(), 2000);
         }
       },
       deep: true,
