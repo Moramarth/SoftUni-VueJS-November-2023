@@ -1,13 +1,18 @@
-<script>
-import HelloWorld from './components/HelloWorld.vue';
-
-export default {
-  components: {
-    HelloWorld,
-  },
-};
+<script setup>
+import AppHeader from './components/AppHeader.vue';
+import AppFooter from './components/AppFooter.vue';
 </script>
 
 <template>
-  <HelloWorld />
+  <AppHeader />
+  <main>
+    <router-view />
+  </main>
+  <AppFooter />
 </template>
+
+<style scoped>
+main {
+  padding: 1rem 2rem;
+}
+</style>
