@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { axiosInstance } from './axios';
 
 async function loginUser(userData) {
   try {
-    const res = await axios.post('https://dummyjson.com/auth/login', userData);
+    const res = await axiosInstance.post('auth/login', userData);
     return res.data;
   }
   catch (error) {

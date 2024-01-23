@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Shop from '../views/Shop/Shop.vue';
-import Contacts from '../views/Contacts.vue';
-import Cart from '../views/Cart.vue';
-import About from '../views/About.vue';
-import Register from '../views/Register/Register.vue';
-import Login from '../views/Login.vue';
-import Profile from '../views/Profile.vue';
-import Favourites from '../views/Favourites.vue';
 import { useUserStore } from '../stores/userStore';
+
+const Home = () => import('../views/Home.vue');
+const Shop = () => import('../views/Shop/Shop.vue');
+const Contacts = () => import('../views/Contacts.vue');
+const Cart = () => import('../views/Cart.vue');
+const About = () => import('../views/About.vue');
+const Register = () => import('../views/Register/Register.vue');
+const Login = () => import('../views/Login.vue');
+const Profile = () => import('../views/Profile.vue');
+const Favourites = () => import('../views/Favourites.vue');
 
 function validateUser() {
   const userStore = useUserStore();

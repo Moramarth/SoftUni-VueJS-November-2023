@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { axiosInstance } from './axios';
 
 async function getAllProducts() {
   try {
-    const res = await axios.get('https://dummyjson.com/products');
+    const res = await axiosInstance.get('products');
     return res.data;
   }
   catch (error) {
@@ -18,7 +18,7 @@ async function getAllProducts() {
 
 async function getProductById(id) {
   try {
-    const res = await axios.get(`https://dummyjson.com/products/${id}`);
+    const res = await axiosInstance.get(`products/${id}`);
     return res.data;
   }
   catch (error) {
