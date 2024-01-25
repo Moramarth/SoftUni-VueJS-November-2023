@@ -1,44 +1,33 @@
-<script>
-import { mapActions, mapState } from 'pinia';
+<script setup>
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useCartStore } from '../stores/cartStore';
 import { getProductById } from '../dataProviders/products';
 import Loader from '../components/Loader.vue';
 
-export default {
-  components: {
-    Loader,
-  },
-  data() {
-    return {
-      productsInfo: {},
-      isLoading: true,
-    };
-  },
-  computed: {
-    ...mapState(useCartStore, ['products']),
-    totalSum() {
-      let sum = 0;
-      this.products.forEach((product) => {
-        sum += (this.productsInfo[product.id]?.price ?? 0) * product.quantity;
-      });
-      return sum;
-    },
-  },
-  async created() {
-    const promises = [];
-    this.products.forEach((product) => {
-      promises.push(getProductById(product.id));
-    });
-    const allProducts = await Promise.all(promises);
-    allProducts.forEach((product) => {
-      this.productsInfo[product.id] = product;
-    });
-    this.isLoading = false;
-  },
-  methods: {
-    ...mapActions(useCartStore, ['changeQuantity']),
-  },
-};
+const isLoading = ref(true);
+const productsInfo = reactive({});
+const cartStore = useCartStore();
+
+const products = computed(() => cartStore.products);
+const totalSum = computed(() => {
+  let sum = 0;
+  products.value.forEach((product) => {
+    sum += (productsInfo[product.id]?.price ?? 0) * product.quantity;
+  });
+  return sum;
+});
+
+onMounted(async () => {
+  const promises = [];
+  products.value.forEach((product) => {
+    promises.push(getProductById(product.id));
+  });
+  const allProducts = await Promise.all(promises);
+  allProducts.forEach((product) => {
+    productsInfo[product.id] = product;
+  });
+  isLoading.value = false;
+});
 </script>
 
 <template>
@@ -61,10 +50,7 @@ export default {
           <tr v-for="product in products" :key="product.id">
             <td>
               <div class="img-wrapper">
-                <img
-                  :src="productsInfo[product.id].thumbnail"
-                  alt=""
-                >
+                <img :src="productsInfo[product.id].thumbnail" alt="">
               </div>
             </td>
             <td>
@@ -80,7 +66,7 @@ export default {
                 type="number"
                 :value="product.quantity"
                 style="width: 5rem;"
-                @input="changeQuantity(product.id, $event)"
+                @input="cartStore.changeQuantity(product.id, $event)"
               >
             </td>
             <td class="price">

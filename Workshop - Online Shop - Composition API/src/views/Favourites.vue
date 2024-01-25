@@ -1,12 +1,8 @@
-<script>
-import { mapState } from 'pinia';
+<script setup>
+import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore';
 
-export default {
-  computed: {
-    ...mapState(useUserStore, ['favouritesIDs']),
-  },
-};
+const favouritesIDs = computed(() => useUserStore().favouritesIDs);
 </script>
 
 <template>

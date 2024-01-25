@@ -1,31 +1,27 @@
-<script>
-import { mapActions } from 'pinia';
+<script setup>
+import { useRouter } from 'vue-router';
+import { reactive, ref } from 'vue';
 import { loginUser } from '../dataProviders/auth';
 import { useUserStore } from '../stores/userStore';
 
-export default {
-  data() {
-    return {
-      isLoading: false,
-      user: {
-        username: '',
-        password: '',
-      },
-    };
-  },
-  methods: {
-    ...mapActions(useUserStore, ['setProfile']),
-    async onSubmit() {
-      this.isLoading = true;
-      const userData = await loginUser(this.user);
-      if (userData) {
-        this.setProfile(userData);
-        this.$router.push('/profile');
-      }
-      this.isLoading = false;
-    },
-  },
-};
+const router = useRouter();
+const userStore = useUserStore();
+
+const isLoading = ref(false);
+const user = reactive({
+  username: '',
+  password: '',
+});
+
+async function onSubmit() {
+  isLoading.value = true;
+  const userData = await loginUser(user);
+  if (userData) {
+    userStore.setProfile(userData);
+    router.push('/profile');
+  }
+  isLoading.value = false;
+}
 </script>
 
 <template>
@@ -64,33 +60,34 @@ export default {
 
 <style scoped>
 .card {
-    max-width: 640px;
-    margin: 0 auto;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .card h1,
 .card h3 {
-    margin-bottom: 1rem;
-    text-align: center;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .loader {
-    width: 24px;
-    height: 24px;
-    border: 5px solid white;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    }
+  width: 24px;
+  height: 24px;
+  border: 5px solid white;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
 
-    @keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-    }
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>

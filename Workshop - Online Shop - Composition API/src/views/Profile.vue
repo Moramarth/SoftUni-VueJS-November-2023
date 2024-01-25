@@ -1,12 +1,8 @@
-<script>
-import { mapState } from 'pinia';
+<script setup>
+import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore.js';
 
-export default {
-  computed: {
-    ...mapState(useUserStore, ['profile']),
-  },
-};
+const profile = computed(() => useUserStore().profile);
 </script>
 
 <template>
