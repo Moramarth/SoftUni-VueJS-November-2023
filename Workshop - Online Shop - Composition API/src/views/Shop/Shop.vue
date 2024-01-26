@@ -1,5 +1,5 @@
-<script>
-import { mapActions } from 'pinia';
+<script setup>
+import { computed, onMounted, ref } from 'vue';
 import { getAllProducts } from '../../dataProviders/products';
 import { getAllCategories } from '../../dataProviders/categories';
 import { useCartStore } from '../../stores/cartStore';
@@ -7,40 +7,27 @@ import Loader from '../../components/Loader.vue';
 import Filters from './components/Filters.vue';
 import ProductCard from './components/ProductCard.vue';
 
-export default {
-  components: {
-    Filters,
-    ProductCard,
-    Loader,
-  },
-  data() {
-    return {
-      selectedFilter: '',
-      products: [],
-      categories: [],
-      isLoading: true,
-    };
-  },
-  computed: {
-    displayProducts() {
-      if (this.selectedFilter === '')
-        return this.products;
+const selectedFilter = ref('');
+const products = ref([]);
+const categories = ref([]);
+const isLoading = ref(true);
+const cartStore = useCartStore();
 
-      return this.products.filter(product => product.category === this.selectedFilter);
-    },
-  },
-  async created() {
-    const promises = await Promise.all([getAllProducts(), getAllCategories()]);
-    this.products = promises[0].products;
-    this.categories = promises[1];
-    this.isLoading = false;
-  },
-  methods: {
-    ...mapActions(useCartStore, ['addToCart']),
-    onFilterSelect(selected) {
-      this.selectedFilter = selected;
-    },
-  },
+const displayProducts = computed(() => {
+  if (selectedFilter.value === '')
+    return products.value;
+  return products.value.filter(product => product.category === selectedFilter.value);
+});
+
+onMounted(async () => {
+  const promises = await Promise.all([getAllProducts(), getAllCategories()]);
+  products.value = promises[0].products;
+  categories.value = promises[1];
+  isLoading.value = false;
+});
+
+function onFilterSelect(selected) {
+  selectedFilter.value = selected;
 };
 </script>
 
@@ -61,7 +48,7 @@ export default {
       v-for="product in displayProducts"
       :key="`products-${product.id}`"
       :product="product"
-      @on-add-to-cart="addToCart"
+      @on-add-to-cart="cartStore.addToCart"
     >
       <template #title>
         <h2 class="title">

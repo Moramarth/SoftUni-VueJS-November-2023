@@ -1,80 +1,77 @@
-<script>
-import { mapActions, mapState } from 'pinia';
+<script setup>
+import { computed } from 'vue';
 import { useCartStore } from '../../../stores/cartStore';
 import { useUserStore } from '../../../stores/userStore';
 
-export default {
-  props: {
-    product: {
-      type: Object,
-      required: true,
-      default: () => ({
-        id: -1,
-        title: 'DEFAULT ITEM',
-        description: 'DEFAULT ITEM',
-        price: 0,
-        discountPercentage: 0,
-        rating: 0,
-        stock: 0,
-        brand: 'DEFAULT ITEM',
-        category: 'womens-dresses',
-        thumbnail: 'https://i.dummyjson.com/data/products/41/thumbnail.webp',
-        images: [
-          'https://i.dummyjson.com/data/products/41/1.jpg',
-        ],
-      }),
-    },
+const props = defineProps({
+  product: {
+    type: Object,
+    required: true,
+    default: () => ({
+      id: -1,
+      title: 'DEFAULT ITEM',
+      description: 'DEFAULT ITEM',
+      price: 0,
+      discountPercentage: 0,
+      rating: 0,
+      stock: 0,
+      brand: 'DEFAULT ITEM',
+      category: 'womens-dresses',
+      thumbnail: 'https://i.dummyjson.com/data/products/41/thumbnail.webp',
+      images: [
+        'https://i.dummyjson.com/data/products/41/1.jpg',
+      ],
+    }),
   },
-  emits: ['onAddToCart'],
-  computed: {
-    ...mapState(useCartStore, ['getProduct']),
-    ...mapState(useUserStore, ['favouritesIDs', 'isAuthenticated']),
-    isDisabled() {
-      const current = this.getProduct(this.product.id);
-      if (!current)
-        return false;
+});
 
-      return current.quantity >= this.product.stock;
-    },
-    isInFavourites() {
-      if (this.favouritesIDs.length > 0)
-        return this.favouritesIDs.includes(this.product.id);
-      else return false;
-    },
-  },
-  methods: {
-    ...mapActions(useUserStore, ['addFavouriteProduct', 'removeFavouriteProduct']),
-    onFavouriteClick() {
-      if (this.isInFavourites) {
-        this.removeFavouriteProduct(this.product.id);
-      }
-      else {
-        this.addFavouriteProduct(this.product.id);
-      }
-    },
-  },
+const emit = defineEmits(['onAddToCart']);
+const userStore = useUserStore();
+const cartStore = useCartStore();
+
+const isDisabled = computed(() => {
+  const current = cartStore.getProduct(props.product.id);
+  if (!current)
+    return false;
+
+  return current.quantity >= props.product.stock;
+});
+
+const isInFavourites = computed(() => {
+  if (userStore.favouritesIDs.length > 0)
+    return userStore.favouritesIDs.includes(props.product.id);
+  return false;
+});
+
+function onFavouriteClick() {
+  if (isInFavourites.value) {
+    userStore.removeFavouriteProduct(props.product.id);
+  }
+  else {
+    userStore.addFavouriteProduct(props.product.id);
+  }
 };
 </script>
 
 <template>
   <article>
     <span v-if="isInFavourites" class="icon">❤️</span>
-    <img :src="product.thumbnail" alt="img">
+    <img :src="props.product.thumbnail" alt="img">
 
     <slot name="title">
-      <h2>{{ product.title }}</h2>
+      <h2>{{ props.product.title }}</h2>
     </slot>
 
     <p>
-      {{ product.description }}
+      {{ props.product.description }}
     </p>
-    <p><b>Price</b>: {{ product.price }}$</p>
+    <p><b>Price</b>: {{ props.product.price }}$</p>
     <footer>
-      <button class="secondary outline" @click="$emit('onAddToCart', product.id)">
+      <button class="secondary outline" @click="emit('onAddToCart', props.product.id)">
         Add to cart 🛒
       </button>
       <button
-        v-if="isAuthenticated"
+        v-if="userStore.isAuthenticated"
         class="secondary outline"
         :disabled="isDisabled"
         @click="onFavouriteClick"

@@ -1,29 +1,27 @@
-<script>
-export default {
-  props: {
-    categories: {
-      type: Array,
-      default: () => [],
-    },
-    activeItem: {
-      type: String,
-      required: true,
-    },
+<script setup>
+const props = defineProps({
+  categories: {
+    type: Array,
+    default: () => [],
   },
-  emits: ['onSelect'],
-  methods: {
-    onSelect(selected) {
-      const val = this.activeItem === selected ? '' : selected;
-      this.$emit('onSelect', val);
-    },
+  activeItem: {
+    type: String,
+    required: true,
   },
+});
+
+const emit = defineEmits(['onSelect']);
+
+function onSelect(selected) {
+  const val = props.activeItem === selected ? '' : selected;
+  emit('onSelect', val);
 };
 </script>
 
 <template>
   <div>
     <ul role="list" class="categories">
-      <li v-for="category in categories" :key="category">
+      <li v-for="category in props.categories" :key="category">
         <button :class="[activeItem === category ? 'primary' : 'secondary outline']" @click="onSelect(category)">
           {{ category.toUpperCase() }}
         </button>
