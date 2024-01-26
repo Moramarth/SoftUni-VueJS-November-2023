@@ -1,36 +1,39 @@
-<script>
-export default {
-  props: {
-    modelValue: {
-      type: String,
-    },
-    field: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-    },
-    v$: {
-      type: Object,
-    },
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  modelValue: {
+    type: String,
   },
-  emits: ['update:modelValue'],
-  computed: {
-    hasErrors() {
-      return this.v$?.formData[this.field]?.$errors.length;
-    },
+  field: {
+    type: String,
+    required: true,
   },
-  methods: {
-    onChange(event) {
-      this.$emit('update:modelValue', event.target.value);
-    },
+  label: {
+    type: String,
+    required: true,
   },
-};
+  required: {
+    type: Boolean,
+  },
+  v$: {
+    type: Object,
+  },
+
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const hasErrors = computed(() => {
+  if (props.v$) {
+    return props.v$[props.field]?.$errors.length;
+  }
+  return 0;
+});
+
+function onChange(event) {
+  emit('update:modelValue', event.target.value);
+}
 </script>
 
 <template>
@@ -45,7 +48,7 @@ export default {
       >
     </slot>
     <ul v-if="hasErrors" class="error-msg">
-      <li v-for="error in v$?.formData[field].$errors" :key="error.$uid">
+      <li v-for="error in v$[field].$errors" :key="error.$uid">
         {{ error.$message }}
       </li>
     </ul>

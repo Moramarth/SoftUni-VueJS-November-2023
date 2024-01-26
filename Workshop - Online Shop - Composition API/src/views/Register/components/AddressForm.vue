@@ -1,51 +1,42 @@
-<script>
+<script setup>
+import { computed, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { minLength, required } from '@vuelidate/validators';
 import FormItem from './FormItem.vue';
 
-export default {
-  components: { FormItem },
-  props: {
-    initialData: {
-      type: Object,
-      required: true,
-      default: () => ({
-        address1: '',
-        address2: '',
-        city: '',
-      }),
-    },
+const props = defineProps({
+  initialData: {
+    type: Object,
+    required: true,
+    default: () => ({
+      address1: '',
+      address2: '',
+      city: '',
+    }),
   },
-  emits: ['onSubmit', 'onBack'],
-  setup() {
-    return { v$: useVuelidate() };
+});
+
+const emit = defineEmits(['onSubmit', 'onBack']);
+
+const formData = reactive({ ...props.initialData });
+
+const rules = computed(() => ({
+  address1: {
+    required,
+    minLength: minLength(5),
   },
-  data() {
-    return {
-      formData: { ...this.initialData },
-    };
+  city: {
+    required,
   },
-  validations() {
-    return {
-      formData: {
-        address1: {
-          required,
-          minLength: minLength(5),
-        },
-        city: {
-          required,
-        },
-      },
-    };
-  },
-  methods: {
-    async handleSubmit() {
-      const isValid = await this.v$.$validate();
-      if (isValid) {
-        this.$emit('onSubmit', this.formData);
-      }
-    },
-  },
+}));
+
+const v$ = useVuelidate(rules, formData);
+
+async function handleSubmit() {
+  const isValid = await v$.value.$validate();
+  if (isValid) {
+    emit('onSubmit', formData);
+  }
 };
 </script>
 

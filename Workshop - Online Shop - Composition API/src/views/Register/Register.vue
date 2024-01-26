@@ -1,52 +1,37 @@
-<script>
-import { useVuelidate } from '@vuelidate/core';
+<script setup>
+import { reactive, ref } from 'vue';
 import AddressForm from './components/AddressForm.vue';
 import GeneralForm from './components/GeneralForm.vue';
 
-export default {
-  components: { GeneralForm, AddressForm },
-  setup() {
-    return { v$: useVuelidate() };
+const activeForm = ref('general');
+const data = reactive({
+  general: {
+    name: '',
+    pass: '',
+    confirmPass: '',
+    phone: 0,
+    email: '',
+    gender: '',
+    dateOfBirth: '',
   },
-  data() {
-    return {
-      activeForm: 'general',
-      data: {
-        general: {
-          name: '',
-          pass: '',
-          confirmPass: '',
-          phone: 0,
-          email: '',
-          gender: '',
-          dateOfBirth: '',
-        },
-        address: {
-          address1: '',
-          address2: '',
-          city: '',
-        },
-      },
-    };
+  address: {
+    address1: '',
+    address2: '',
+    city: '',
   },
-  methods: {
-    async onGeneralFormSubmit(generalData) {
-      const isValid = await this.v$.$validate();
-      if (isValid) {
-        this.activeForm = 'address';
-        this.data.general = { ...generalData };
-      }
-    },
-    async onSubmit(addressData) {
-      const isValid = await this.v$.$validate();
-      if (isValid) {
-        this.data.address = { ...addressData };
-      }
-    },
-    onBack() {
-      this.activeForm = 'general';
-    },
-  },
+});
+
+async function onGeneralFormSubmit(generalData) {
+  activeForm.value = 'address';
+  data.general = { ...generalData };
+};
+
+async function onSubmit(addressData) {
+  data.address = { ...addressData };
+};
+
+function onBack() {
+  activeForm.value = 'general';
 };
 </script>
 
@@ -60,6 +45,4 @@ export default {
   />
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

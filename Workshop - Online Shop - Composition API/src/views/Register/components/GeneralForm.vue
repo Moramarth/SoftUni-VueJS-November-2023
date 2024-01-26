@@ -1,7 +1,26 @@
-<script>
-import { useVuelidate } from '@vuelidate/core';
+<script setup>
+import { computed, reactive } from 'vue';
+import useVuelidate from '@vuelidate/core';
 import { alphaNum, email, helpers, maxLength, minLength, numeric, required, sameAs } from '@vuelidate/validators';
 import FormItem from './FormItem.vue';
+
+const props = defineProps({
+  initialData: {
+    type: Object,
+    required: true,
+    default: () => ({
+      name: '',
+      pass: '',
+      confirmPass: '',
+      phone: 0,
+      email: '',
+      gender: '',
+      dateOfBirth: '',
+    }),
+  },
+});
+
+const emit = defineEmits(['onSubmit']);
 
 function hasTwoNames(value) {
   if (!value.includes(' '))
@@ -19,71 +38,43 @@ function namesAreCapitalized(value) {
   return regex.test(value);
 }
 
-export default {
-  components: { FormItem },
-  props: {
-    initialData: {
-      type: Object,
-      required: true,
-      default: () => ({
-        name: '',
-        pass: '',
-        confirmPass: '',
-        phone: 0,
-        email: '',
-        gender: '',
-        dateOfBirth: '',
-      }),
-    },
+const formData = reactive({ ...props.initialData });
+
+const rules = computed(() => ({
+  name: {
+    required: helpers.withMessage('Custom required field msg', required),
+    hasTwoNames: helpers.withMessage('Should contain two names separated by a space!', hasTwoNames),
+    namesAreCapitalized: helpers.withMessage('Both names should start with a capital letter!', namesAreCapitalized),
   },
-  emits: ['onSubmit'],
-  setup() {
-    return { v$: useVuelidate() };
+  pass: {
+    required,
+    alphaNum,
+    minLength: minLength(3),
+    maxLength: maxLength(16),
   },
-  data() {
-    return {
-      formData: { ...this.initialData },
-    };
+  confirmPass: { required, sameAs: sameAs(formData.pass) },
+  email: { required, email },
+  phone: {
+    required,
+    numeric,
+    minLength: minLength(9),
+    maxLength: maxLength(9),
   },
-  validations() {
-    return {
-      formData: {
-        name: {
-          required: helpers.withMessage('Custom required field msg', required),
-          hasTwoNames: helpers.withMessage('Should contain two names separated by a space!', hasTwoNames),
-          namesAreCapitalized: helpers.withMessage('Both names should start with a capital letter!', namesAreCapitalized),
-        },
-        pass: {
-          required,
-          alphaNum,
-          minLength: minLength(3),
-          maxLength: maxLength(16),
-        },
-        confirmPass: { required, sameAs: sameAs(this.formData.pass) },
-        email: { required, email },
-        phone: {
-          required,
-          numeric,
-          minLength: minLength(9),
-          maxLength: maxLength(9),
-        },
-        gender: {
-          required,
-        },
-        dateOfBirth: {
-          required,
-        },
-      },
-    };
+  gender: {
+    required,
   },
-  methods: {
-    async handleSubmit() {
-      const isValid = await this.v$.$validate();
-      if (isValid) {
-        this.$emit('onSubmit', this.formData);
-      }
-    },
+  dateOfBirth: {
+    required,
   },
+}));
+
+const v$ = useVuelidate(rules, formData);
+
+async function handleSubmit() {
+  const isValid = await v$.value.$validate();
+  if (isValid) {
+    emit('onSubmit', formData);
+  }
 };
 </script>
 
