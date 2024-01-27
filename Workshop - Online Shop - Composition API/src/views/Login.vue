@@ -3,7 +3,6 @@ import Password from 'primevue/password';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
-
 import Message from 'primevue/message';
 
 import { useRouter } from 'vue-router';
@@ -51,15 +50,19 @@ async function onSubmit() {
               v-model="user.password"
               input-id="password"
               toggle-mask
+              :feedback="false"
               :disabled="isLoading"
             />
             <label for="password">Password</label>
           </span>
 
-          <Button type="submit" :disabled="isLoading">
-            <span v-if="isLoading" class="loader" />
-            <span v-else>Submit</span>
-          </Button>
+          <Button
+            type="submit"
+            icon="pi pi-send"
+            label="Submit"
+            :loading="isLoading"
+            :disabled="isLoading"
+          />
         </form>
       </template>
     </Card>
@@ -77,25 +80,5 @@ form {
 .wrapper {
   max-width: 40em;
   margin: 0 auto;
-}
-.loader {
-  width: 24px;
-  height: 24px;
-  border: 5px solid white;
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 </style>

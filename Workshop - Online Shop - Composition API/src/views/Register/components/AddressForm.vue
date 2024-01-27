@@ -2,6 +2,8 @@
 import { computed, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { minLength, required } from '@vuelidate/validators';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
 import FormItem from './FormItem.vue';
 
 const props = defineProps({
@@ -41,48 +43,63 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div>
-    <h2>Step 2: Address Information</h2>
-    <form action="" @submit.prevent="handleSubmit">
-      <FormItem
+  <form action="" @submit.prevent="handleSubmit">
+    <FormItem
+      :v$="v$"
+      class="full-row"
+      field="address1"
+      label="Address Line 1"
+      required
+    >
+      <InputText
+        id="address1"
         v-model="formData.address1"
-        :v$="v$"
-        class="full-row"
-        field="address1"
-        label="Address Line 1"
-        required
       />
-      <FormItem
+    </FormItem>
+    <FormItem
+      field="address2"
+      class="full-row"
+      label="Address Line 2"
+    >
+      <InputText
+        id="address2"
         v-model="formData.address2"
-        field="address2"
-        class="full-row"
-        label="Address Line 2"
       />
-      <FormItem
+    </FormItem>
+    <FormItem
+      :v$="v$"
+      field="city"
+      label="City"
+      required
+    >
+      <InputText
+        id="city"
         v-model="formData.city"
-        :v$="v$"
-        field="city"
-        label="City"
-        required
       />
-      <button type="button" class="secondary" @click="$emit('onBack')">
-        Go back
-      </button>
-      <button type="submit">
-        Submit
-      </button>
-    </form>
-  </div>
+    </FormItem>
+    <Button
+      type="button"
+      label=" Go back"
+      severity="secondary"
+      icon="pi pi-arrow-left"
+      @click="$emit('onBack')"
+    />
+    <Button type="submit" icon="pi pi-send" label="Submit" />
+  </form>
 </template>
 
 <style scoped>
 form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 2rem;
 }
 
 form .full-row{
     grid-column: 1 / 3;
+}
+
+form * {
+    width: 100%;
 }
 </style>

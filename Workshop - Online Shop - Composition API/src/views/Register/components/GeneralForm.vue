@@ -1,7 +1,14 @@
 <script setup>
+import Password from 'primevue/password';
+import Dropdown from 'primevue/dropdown';
+import InputNumber from 'primevue/inputnumber';
+import Calendar from 'primevue/calendar';
+import InputText from 'primevue/inputtext';
+
 import { computed, reactive } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { alphaNum, email, helpers, maxLength, minLength, numeric, required, sameAs } from '@vuelidate/validators';
+import Button from 'primevue/button';
 import FormItem from './FormItem.vue';
 
 const props = defineProps({
@@ -12,15 +19,17 @@ const props = defineProps({
       name: '',
       pass: '',
       confirmPass: '',
-      phone: 0,
+      phone: undefined,
       email: '',
       gender: '',
       dateOfBirth: '',
     }),
   },
 });
-
 const emit = defineEmits(['onSubmit']);
+const fieldWrapperStyle = 'width: 100%;';
+const inputStyle = { width: '100%' };
+const options = ['Male', 'Female', 'Other'];
 
 function hasTwoNames(value) {
   if (!value.includes(' '))
@@ -58,7 +67,7 @@ const rules = computed(() => ({
     required,
     numeric,
     minLength: minLength(9),
-    maxLength: maxLength(9),
+    maxLength: maxLength(10),
   },
   gender: {
     required,
@@ -79,98 +88,120 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div>
-    <h2>Step 1: General Information</h2>
-
-    <form action="" @submit.prevent="handleSubmit">
-      <FormItem
+  <form action="" @submit.prevent="handleSubmit">
+    <FormItem
+      :v$="v$"
+      class="full-row"
+      field="name"
+      label="Name"
+      required
+    >
+      <InputText
+        id="name"
         v-model="formData.name"
-        :v$="v$"
-        class="full-row"
-        field="name"
-        label="Name"
-        required
       />
+    </FormItem>
 
-      <FormItem
-        :v$="v$"
-        field="pass"
-        label="Password"
-        required
-      >
-        <input id="pass" v-model="formData.pass" type="password">
-      </FormItem>
+    <FormItem
+      :v$="v$"
+      field="pass"
+      label="Password"
+      required
+    >
+      <Password
+        id="pass"
+        v-model="formData.pass"
+        toggle-mask
+        :input-style="inputStyle"
+        :style="fieldWrapperStyle"
+      />
+    </FormItem>
 
-      <FormItem
-        :v$="v$"
-        field="confirmPass"
-        label="Confirm password"
-        required
-      >
-        <input id="confirmPass" v-model="formData.confirmPass" type="password">
-      </FormItem>
+    <FormItem
+      :v$="v$"
+      field="confirmPass"
+      label="Confirm password"
+      required
+    >
+      <Password
+        id="confirmPass"
+        v-model="formData.confirmPass"
+        toggle-mask
+        :feedback="false"
+        :input-style="inputStyle"
+        :style="fieldWrapperStyle"
+      />
+    </FormItem>
 
-      <FormItem
+    <FormItem
+      :v$="v$"
+      field="email"
+      label="Email"
+      required
+    >
+      <InputText
+        id="email"
         v-model="formData.email"
-        :v$="v$"
-        field="email"
-        label="Email"
-        required
       />
+    </FormItem>
 
-      <FormItem
-        :v$="v$"
-        field="phone"
-        label="Phone number"
-        required
-      >
-        <input id="phone" v-model="formData.phone" type="number">
-      </FormItem>
+    <FormItem
+      :v$="v$"
+      field="phone"
+      label="Phone number"
+      required
+    >
+      <InputNumber
+        id="phone"
+        v-model="formData.phone"
+        :format="false"
+      />
+    </FormItem>
 
-      <FormItem
-        :v$="v$"
-        field="gender"
-        label="Gender"
-        required
-      >
-        <select id="gender" v-model="formData.gender">
-          <option disabled value="">
-            Select
-          </option>
-          <option value="Male">
-            Male
-          </option>
-          <option value="Female">
-            Female
-          </option>
-          <option value="Other">
-            Other
-          </option>
-        </select>
-      </FormItem>
-      <FormItem
-        :v$="v$"
-        field="dateOfBirth"
-        label="Date of birth"
-        required
-      >
-        <input id="dateOfBirth" v-model="formData.dateOfBirth" type="date">
-      </FormItem>
-      <button type="submit" class="full-row">
-        Submit
-      </button>
-    </form>
-  </div>
+    <FormItem
+      :v$="v$"
+      field="gender"
+      label="Gender"
+      required
+    >
+      <Dropdown
+        id="gender"
+        v-model="formData.gender"
+        :options="options"
+      />
+    </FormItem>
+    <FormItem
+      :v$="v$"
+      field="dateOfBirth"
+      label="Date of birth"
+      required
+    >
+      <Calendar
+        id="dateOfBirth"
+        v-model="formData.dateOfBirth"
+        show-icon
+      />
+    </FormItem>
+    <Button
+      type="submit"
+      label="Submit"
+      icon="pi pi-send"
+      class="full-row"
+    />
+  </form>
 </template>
 
 <style scoped>
 form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 2rem;
 }
 
 form .full-row{
     grid-column: 1 / 3;
+}
+form * {
+    width: 100%;
 }
 </style>

@@ -33,13 +33,13 @@ const items = ref([
   },
   {
     label: 'Register',
-    icon: 'pi pi-box',
+    icon: 'pi pi-plus-circle',
     route: '/register',
     visible: () => !userStore.isAuthenticated,
   },
   {
     label: 'Login',
-    icon: 'pi pi-box',
+    icon: 'pi pi-sign-in',
     route: '/login',
     visible: () => !userStore.isAuthenticated,
   },
@@ -57,7 +57,7 @@ const items = ref([
   },
   {
     label: 'Logout',
-    icon: 'pi pi-logout',
+    icon: 'pi-sign-out',
     route: '/',
     command: userStore.userStoreLogout,
     visible: () => userStore.isAuthenticated,

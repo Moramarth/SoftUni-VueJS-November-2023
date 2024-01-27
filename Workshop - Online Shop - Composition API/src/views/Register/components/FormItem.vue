@@ -2,9 +2,6 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-  modelValue: {
-    type: String,
-  },
   field: {
     type: String,
     required: true,
@@ -13,16 +10,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  required: {
-    type: Boolean,
-  },
   v$: {
     type: Object,
   },
 
 });
-
-const emit = defineEmits(['update:modelValue']);
 
 const hasErrors = computed(() => {
   if (props.v$) {
@@ -30,23 +22,14 @@ const hasErrors = computed(() => {
   }
   return 0;
 });
-
-function onChange(event) {
-  emit('update:modelValue', event.target.value);
-}
 </script>
 
 <template>
   <div :class="hasErrors ? 'has-errors' : ''">
-    <label :for="field"> {{ label }} </label>
-    <slot>
-      <input
-        :id="field"
-        :value="modelValue"
-        type="text"
-        @input="onChange"
-      >
-    </slot>
+    <span class="p-float-label">
+      <slot />
+      <label :for="field">{{ label }}</label>
+    </span>
     <ul v-if="hasErrors" class="error-msg">
       <li v-for="error in v$[field].$errors" :key="error.$uid">
         {{ error.$message }}
@@ -56,9 +39,9 @@ function onChange(event) {
 </template>
 
 <style scoped>
-.has-errors> :deep(input),
-.has-errors> :deep(select),
-.has-errors> :deep(textarea) {
+.has-errors :deep(input),
+.has-errors :deep(select),
+.has-errors :deep(textarea) {
     border-color: red;
 }
 
