@@ -1,4 +1,11 @@
 <script setup>
+import Password from 'primevue/password';
+import InputText from 'primevue/inputtext';
+import Card from 'primevue/card';
+import Button from 'primevue/button';
+
+import Message from 'primevue/message';
+
 import { useRouter } from 'vue-router';
 import { reactive, ref } from 'vue';
 import { loginUser } from '../dataProviders/auth';
@@ -25,51 +32,52 @@ async function onSubmit() {
 </script>
 
 <template>
-  <article class="card">
-    <h1>Login</h1>
-    <h3>Username: kminchelle </h3>
-    <h3>password: 0lelplR</h3>
+  <div class="wrapper">
+    <Message :closable="false" severity="success">
+      <h1>Login</h1>
+      <h3>Username: kminchelle </h3>
+      <h3>password: 0lelplR</h3>
+    </Message>
+    <Card>
+      <template #content>
+        <form @submit.prevent="onSubmit">
+          <span class="p-float-label">
+            <InputText id="username" v-model="user.username" />
+            <label for="username">Username</label>
+          </span>
 
-    <form @submit.prevent="onSubmit">
-      <div>
-        <label for="username">Username</label>
-        <input
-          id="username"
-          v-model="user.username"
-          required
-          type="text"
-          :disabled="isLoading"
-        >
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input
-          v-model="user.password"
-          required="password"
-          type="password"
-          :disabled="isLoading"
-        >
-      </div>
-      <button :disabled="isLoading">
-        <span v-if="isLoading" class="loader" />
-        <span v-else>Submit</span>
-      </button>
-    </form>
-  </article>
+          <span class="p-float-label">
+            <Password
+              v-model="user.password"
+              input-id="password"
+              toggle-mask
+              :disabled="isLoading"
+            />
+            <label for="password">Password</label>
+          </span>
+
+          <Button type="submit" :disabled="isLoading">
+            <span v-if="isLoading" class="loader" />
+            <span v-else>Submit</span>
+          </Button>
+        </form>
+      </template>
+    </Card>
+  </div>
 </template>
 
 <style scoped>
-.card {
-  max-width: 640px;
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.wrapper {
+  max-width: 40em;
   margin: 0 auto;
 }
-
-.card h1,
-.card h3 {
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
 .loader {
   width: 24px;
   height: 24px;

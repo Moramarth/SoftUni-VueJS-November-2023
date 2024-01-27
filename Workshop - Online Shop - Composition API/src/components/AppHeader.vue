@@ -1,75 +1,68 @@
-<script>
-import { mapActions, mapState } from 'pinia';
+<script setup>
+import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import Menubar from 'primevue/menubar';
-import { useCartStore } from '../stores/cartStore';
 import { useUserStore } from '../stores/userStore';
 
-export default {
-  components: {
-    RouterLink,
-    Menubar,
+const userStore = useUserStore();
+const items = ref([
+  {
+    label: 'Home',
+    icon: 'pi pi-home',
+    route: '/',
   },
-  data() {
-    return {
-      items: [
-        {
-          label: 'Home',
-          icon: 'pi pi-box',
-          route: '/',
-        },
-        {
-          label: 'Shop',
-          icon: 'pi pi-box',
-          route: '/shop',
-        },
-        {
-          label: 'About',
-          icon: 'pi pi-box',
-          route: 'about',
-        },
-        {
-          label: 'Contacts',
-          icon: 'pi pi-box',
-          route: '/contacts',
-        },
-        {
-          label: 'Register',
-          icon: 'pi pi-box',
-          route: '/register',
-        },
-        {
-          label: 'Login',
-          icon: 'pi pi-box',
-          route: '/login',
-        },
-        {
-          label: 'Profile',
-          icon: 'pi pi-box',
-          route: '/profile',
-        },
-        {
-          label: 'My favourites',
-          icon: 'pi pi-box',
-          route: '/favourites',
-        },
-        {
-          label: 'Cart',
-          icon: 'pi pi-box',
-          route: '/cart',
-        },
-      ],
-    };
+  {
+    label: 'Shop',
+    icon: 'pi pi-box',
+    route: '/shop',
   },
-  computed: {
-    ...mapState(useCartStore, ['products']),
-    ...mapState(useUserStore, ['isAuthenticated', 'profile']),
+  {
+    label: 'About',
+    icon: 'pi pi-info-circle',
+    route: 'about',
   },
-  methods: {
-    ...mapActions(useUserStore, ['userStoreLogout']),
+  {
+    label: 'Contacts',
+    icon: 'pi pi-phone',
+    route: '/contacts',
   },
-
-};
+  {
+    label: 'Cart',
+    icon: 'pi pi-shopping-cart',
+    route: '/cart',
+  },
+  {
+    label: 'Register',
+    icon: 'pi pi-box',
+    route: '/register',
+    visible: () => !userStore.isAuthenticated,
+  },
+  {
+    label: 'Login',
+    icon: 'pi pi-box',
+    route: '/login',
+    visible: () => !userStore.isAuthenticated,
+  },
+  {
+    label: 'Profile',
+    icon: 'pi pi-user',
+    route: '/profile',
+    visible: () => userStore.isAuthenticated,
+  },
+  {
+    label: 'My favourites',
+    icon: 'pi pi-star',
+    route: '/favourites',
+    visible: () => userStore.isAuthenticated,
+  },
+  {
+    label: 'Logout',
+    icon: 'pi pi-logout',
+    route: '/',
+    command: userStore.userStoreLogout,
+    visible: () => userStore.isAuthenticated,
+  },
+]);
 </script>
 
 <template>
@@ -85,7 +78,7 @@ export default {
           </li>
         </ul>
       </template>
-      <template #item="{ item, props, hasSubmenu }">
+      <template #item="{ item, props }">
         <RouterLink
           v-if="item.route"
           v-slot="{ href, navigate }"
@@ -101,36 +94,21 @@ export default {
             <span class="ml-2">{{ item.label }}</span>
           </a>
         </RouterLink>
-        <a
-          v-else
-          :href="item.url"
-          :target="item.target"
-          v-bind="props.action"
-        >
-          <span :class="item.icon" />
-          <span class="ml-2">{{ item.label }}</span>
-          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down ml-2" />
-        </a>
       </template>
     </Menubar>
   </header>
 </template>
 
 <style scoped>
+.p-menubar.p-component{
+  justify-content: space-between;
+}
+.p-menubar .p-menubar-root-list > .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover {
+    color: #4b5563;
+    background-color: var(--primary-color);
+}
+
 img {
   height: 2rem;
 }
-/* .profileLink{
-  display: flex;
-  gap: 0.25rem;
-  align-items: center;
-}
-.profileLink img{
-  width: 2rem;
-  height: auto;
-  border-radius: 100%;
-  overflow: hidden;
-  border: 1px solid var(--primary);
-  margin: 0 auto;
-} */
 </style>
