@@ -95,6 +95,10 @@ table {
   margin: 0 auto;
 }
 
+.p-datatable :deep(.p-datatable-footer) {
+  text-align: right;
+}
+
 .img-wrapper {
   width: 4rem;
   height: 4rem;

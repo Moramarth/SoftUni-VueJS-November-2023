@@ -1,4 +1,6 @@
 <script setup>
+import Button from 'primevue/button';
+
 const props = defineProps({
   categories: {
     type: Array,
@@ -20,11 +22,11 @@ function onSelect(selected) {
 
 <template>
   <div>
-    <ul role="list" class="categories">
+    <ul class="categories">
       <li v-for="category in props.categories" :key="category">
-        <button :class="[activeItem === category ? 'primary' : 'secondary outline']" @click="onSelect(category)">
+        <Button :severity="activeItem === category ? 'primary' : 'secondary'" :outlined="activeItem !== category" @click="onSelect(category)">
           {{ category.toUpperCase() }}
-        </button>
+        </Button>
       </li>
     </ul>
   </div>
@@ -40,6 +42,7 @@ function onSelect(selected) {
 
 .categories li{
   margin: 0;
+  list-style: none;
 }
 
 .categories .btn{

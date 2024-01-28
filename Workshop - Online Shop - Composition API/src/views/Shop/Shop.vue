@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
+import Card from 'primevue/card';
 import { getAllProducts } from '../../dataProviders/products';
 import { getAllCategories } from '../../dataProviders/categories';
 import { useCartStore } from '../../stores/cartStore';
@@ -32,15 +33,17 @@ function onFilterSelect(selected) {
 </script>
 
 <template>
-  <div class="container">
-    <section id="shop">
+  <Card>
+    <template #title>
       <h2>Shop Our Collections</h2>
+    </template>
+    <template #content>
       <p>
         From casual wear to formal attire, we have something for every occasion. Browse through our diverse range of
         products and find the perfect outfit that suits your style.
       </p>
-    </section>
-  </div>
+    </template>
+  </Card>
   <Filters :categories="categories" :active-item="selectedFilter" @on-select="onFilterSelect" />
   <Loader v-if="isLoading" />
   <div v-else class="products">

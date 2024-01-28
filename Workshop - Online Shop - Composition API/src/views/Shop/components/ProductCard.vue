@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue';
+import Card from 'primevue/card';
+import Button from 'primevue/button';
 import { useCartStore } from '../../../stores/cartStore';
 import { useUserStore } from '../../../stores/userStore';
 
@@ -54,42 +56,73 @@ function onFavouriteClick() {
 </script>
 
 <template>
-  <article>
-    <span v-if="isInFavourites" class="icon">❤️</span>
-    <img :src="props.product.thumbnail" alt="img">
+  <Card>
+    <template #header>
+      <span v-if="isInFavourites" class="icon">❤️</span>
+      <img :src="props.product.thumbnail" alt="img">
+    </template>
 
-    <slot name="title">
-      <h2>{{ props.product.title }}</h2>
-    </slot>
-
-    <p>
-      {{ props.product.description }}
-    </p>
-    <p><b>Price</b>: {{ props.product.price }}$</p>
-    <footer>
-      <button class="secondary outline" @click="emit('onAddToCart', props.product.id)">
-        Add to cart 🛒
-      </button>
-      <button
+    <template #title>
+      <slot name="title">
+        <h2>{{ props.product.title }}</h2>
+      </slot>
+    </template>
+    <template #content>
+      <p>
+        {{ props.product.description }}
+      </p>
+      <p><b>Price</b>: {{ props.product.price }}$</p>
+    </template>
+    <template #footer>
+      <Button
+        class="secondary outline"
+        label="Add to cart"
+        icon="pi pi-shopping-cart"
+        @click="emit('onAddToCart', props.product.id)"
+      />
+      <Button
         v-if="userStore.isAuthenticated"
         class="secondary outline"
         :disabled="isDisabled"
+        :label=" isInFavourites ? 'Remove from favourites' : 'Add to favourites'"
+        severity="secondary"
         @click="onFavouriteClick"
-      >
-        {{ isInFavourites ? 'Remove from favourites' : 'Add to favourites' }}
-      </button>
-    </footer>
-  </article>
+      />
+    </template>
+  </Card>
 </template>
 
 <style scoped>
-article{
+.p-card {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  max-width: 25em;
+  overflow: hidden;
+}
+.p-card img {
+  width: 100%;
+}
+.p-card :deep(.p-card-footer) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.p-card :deep(.p-card-body) {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
+.p-card :deep(.p-card-content) {
+ flex-grow: 1;
+}
 .icon{
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
+  color: red
 }
 </style>

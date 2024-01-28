@@ -57,7 +57,7 @@ const items = ref([
   },
   {
     label: 'Logout',
-    icon: 'pi-sign-out',
+    icon: 'pi pi-sign-out',
     route: '/',
     command: userStore.userStoreLogout,
     visible: () => userStore.isAuthenticated,
